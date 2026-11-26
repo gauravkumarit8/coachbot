@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Your assistant: details, questions and leads</title>
+<style>
+  :root { --bg:#f5f6f8; --card:#fff; --ink:#15181d; --muted:#5b6470; --line:#dfe3e8; --brand:#1a56db; --ok:#0a7a3d; --bad:#b42318; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#12151a; --card:#1b1f26; --ink:#eef1f5; --muted:#9aa4b2; --line:#2e353f; --brand:#6ea0ff; --ok:#4cc48a; --bad:#ff8a80; } }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.5 system-ui,sans-serif; }
+  main { max-width:760px; margin:0 auto; padding:16px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; margin-bottom:16px; }
+  h1 { font-size:1.35rem; margin:0 0 4px; } h2 { font-size:1.1rem; margin:0 0 6px; } p { margin:6px 0; } .muted { color:var(--muted); font-size:.92rem; }
+  input, textarea { width:100%; border:1px solid var(--line); border-radius:8px; padding:12px; font:inherit; background:var(--bg); color:var(--ink); }
+  textarea { min-height:50vh; font-family:ui-monospace,Consolas,monospace; font-size:.92rem; line-height:1.45; }
+  button { border:0; border-radius:8px; padding:12px 18px; font:inherit; font-weight:600; cursor:pointer; background:var(--brand); color:#fff; }
+  button.secondary { background:transparent; color:var(--brand); border:1px solid var(--brand); }
+  button:disabled { opacity:.5; cursor:default; }
+  .row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:12px; }
+  #msg { min-height:1.4em; font-weight:600; } .ok { color:var(--ok); } .bad { color:var(--bad); }
+  #count { margin-left:auto; } a { color:var(--brand); }
+  .scroll { overflow-x:auto; } table { border-collapse:collapse; width:100%; font-size:.92rem; }
+  th, td { text-align:left; padding:6px 10px; border-bottom:1px solid var(--line); white-space:nowrap; }
+  ul { padding-left:20px; margin:8px 0; } li { margin:4px 0; }
+  pre { white-space:pre-wrap; word-break:break-word; background:var(--bg); border:1px solid var(--line); border-radius:10px; padding:12px; font:inherit; }
+  td select, td input { font:inherit; padding:4px 6px; max-width:150px; }
+  .bubble { margin:6px 0; padding:8px 12px; border-radius:10px; border:1px solid var(--line); white-space:pre-wrap; word-break:break-word; }
+  .bubble.user { background:var(--bg); } .bubble.assistant { border-color:var(--brand); }
+  .bubble small { display:block; color:var(--muted); font-size:.8rem; }
+  button.link { background:none; border:0; padding:0; color:var(--brand); font-weight:400; text-align:left; text-decoration:underline; }
+  [hidden] { display:none !important; }
+</style>
+</head>
+<body>
+<main>
+  <section class="card" id="login">
+    <h1>Your assistant</h1>
+    <p class="muted">Enter the owner key you were given. Here you can update your details, see what parents asked that the assistant could not answer, and see parents who want a callback.</p>
+    <p><input id="key" type="password" placeholder="Owner key" autocomplete="current-password"></p>
+    <div class="row"><button id="open">Open</button><span id="loginmsg" class="bad"></span></div>
+  </section>
+
+  <section id="editor" hidden>
+    <div class="card">
+      <h1 id="name"></h1>
+      <p class="muted">Write plainly: courses, batch timings, fees, installments, admission steps, documents, location, timings, refund policy.
+      Anything the assistant must <b>not</b> answer on its own (discounts, scholarships, refunds), write as: <i>NOT provided, counsellor must confirm.</i>
+      Changes go live within a few seconds of saving.</p>
+    </div>
+    <div class="card">
+      <textarea id="text" spellcheck="false" aria-label="Institute details"></textarea>
+      <div class="row">
+        <button id="save">Save changes</button>
+        <button id="undo" class="secondary">Undo last save</button>
+        <a id="try" target="_blank" rel="noopener">Test the chat</a>
+        <span id="count" class="muted"></span>
+      </div>
+      <p id="msg" role="status"></p>
+    </div>
+
+    <div class="card">
+      <h2>Questions your details do not answer yet</h2>
+      <p class="muted">Parents asked these and the assistant could not answer. Add the answers above and it will start answering them.</p>
+      <ul id="unans-list"></ul>
+      <p id="unans-empty" class="muted" hidden>Nothing yet. This list fills up as parents ask questions.</p>
+      <div class="row"><button id="unans-clear" class="secondary" hidden>Mark all as done</button></div>
+    </div>
+
+    <div class="card">
+      <h2>Parents who want a callback</h2>
+      <p id="leads-waiting" class="muted" hidden></p>
+      <div class="scroll">
+        <table id="leads" hidden>
+          <thead><tr><th>When</th><th>Name</th><th>Phone</th><th>Class / interest</th><th>City</th><th>Via</th><th>What happened?</th><th>Note</th></tr></thead>
+          <tbody id="leads-body"></tbody>
+        </table>
+      </div>
+      <p id="leads-empty" class="muted" hidden>No leads yet. A parent appears here when they share a name and phone number.</p>
+      <div class="row"><button id="refresh" class="secondary">Refresh</button><button id="csv" class="secondary">Download leads (CSV)</button></div>
+    </div>
+
+    <div class="card">
+      <h2>This week's summary</h2>
+      <p class="muted">The same summary is sent to you every Monday on Telegram or email, if alerts are set up for your institute.</p>
+      <div class="row"><button id="summary-load" class="secondary">Show this week's summary</button></div>
+      <pre id="summary-text" hidden></pre>
+    </div>
+
+    <div class="card">
+      <h2>Recent conversations</h2>
+      <p class="muted">Read what parents asked and how the assistant answered. Phone numbers are shortened here. Do not share this page.</p>
+      <div class="row"><button id="chats-load" class="secondary">Show recent conversations</button></div>
+      <ul id="chats-list"></ul>
+      <p id="chats-empty" class="muted" hidden>No conversations yet.</p>
+      <div id="chat-view" hidden>
+        <h2 id="chat-title"></h2>
+        <div id="chat-body"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+  var id = decodeURIComponent(location.pathname.split("/").filter(Boolean).pop() || "");
+  var $ = function (x) { return document.getElementById(x); };
+  var key = "", max = 12000, dirty = false;
+  try { key = sessionStorage.getItem("ownerkey:" + id) || ""; } catch (e) {}
+
+  function say(text, ok) { var m = $("msg"); m.textContent = text; m.className = ok ? "ok" : "bad"; }
+  function api(method, path, body) {
+    return fetch("/api/owner/" + encodeURIComponent(id) + "/" + path, {
+      method: method,
+      headers: { "Content-Type": "application/json", "X-Owner-Key": key },
+      body: body ? JSON.stringify(body) : undefined
+    }).then(function (r) {
+      if (r.ok) return r.json();
+      return r.json().catch(function () { return {}; }).then(function (d) {
+        throw new Error(r.status === 403 ? "That key does not match." :
+                        r.status === 429 ? "Too many tries. Please wait a minute." : (d.detail || "Something went wrong (" + r.status + ")."));
+      });
+    });
+  }
+  function counter() { var n = $("text").value.length; $("count").textContent = n + " / " + max; $("count").className = n > max ? "bad" : "muted"; }
+
+  var STATUSES = [["new", "New"], ["called", "Called"], ["demo_booked", "Demo booked"], ["joined", "Joined"], ["not_interested", "Not interested"]];
+  function cell(tr, text) { var td = document.createElement("td"); td.textContent = text || ""; tr.appendChild(td); return td; }
+  function renderLeads(rows) {
+    var body = $("leads-body"); body.textContent = "";
+    $("leads-empty").hidden = rows.length > 0; $("leads").hidden = rows.length === 0;
+    rows.forEach(function (l) {
+      var tr = document.createElement("tr");
+      cell(tr, l.when); cell(tr, l.name);
+      var a = document.createElement("a");
+      a.textContent = l.phone || "";
+      a.href = "tel:" + String(l.phone || "").replace(/[^0-9+]/g, "");   // digits only: nothing else can end up in the link
+      cell(tr, "").appendChild(a);
+      cell(tr, [l.exam_or_class, l.interest].filter(Boolean).join(", ")); cell(tr, l.city); cell(tr, l.channel);
+      var sel = document.createElement("select"), note = document.createElement("input");
+      STATUSES.forEach(function (s) { var o = document.createElement("option"); o.value = s[0]; o.textContent = s[1]; sel.appendChild(o); });
+      sel.value = l.status || "new"; note.type = "text"; note.maxLength = 300; note.value = l.note || ""; note.placeholder = "optional";
+      var save = function () {
+        api("POST", "leads/" + encodeURIComponent(l.id), { status: sel.value, note: note.value }).then(function () {
+          l.status = sel.value; l.note = note.value; countWaiting(rows); say("Saved.", true);
+        }).catch(function (e) { say(e.message, false); });
+      };
+      sel.onchange = save; note.onchange = save;
+      cell(tr, "").appendChild(sel); cell(tr, "").appendChild(note);
+      body.appendChild(tr);
+    });
+    countWaiting(rows);
+  }
+  function countWaiting(rows) {
+    var n = rows.filter(function (l) { return (l.status || "new") === "new"; }).length, p = $("leads-waiting");
+    p.hidden = n === 0; p.textContent = n + (n === 1 ? " parent is" : " parents are") + " still waiting for your call.";
+  }
+  function renderUnanswered(rows) {
+    var ul = $("unans-list"); ul.textContent = "";
+    $("unans-empty").hidden = rows.length > 0; $("unans-clear").hidden = rows.length === 0;
+    rows.forEach(function (r) {
+      var li = document.createElement("li");
+      li.textContent = (r.count > 1 ? r.count + "x  " : "") + r.question;
+      ul.appendChild(li);
+    });
+  }
+  function refreshLists() {
+    return Promise.all([api("GET", "leads"), api("GET", "unanswered")])
+      .then(function (r) { renderLeads(r[0]); renderUnanswered(r[1]); })
+      .catch(function (e) { say("Could not refresh the lists: " + e.message, false); });
+  }
+  function load() {
+    return api("GET", "knowledge").then(function (d) {
+      max = d.max_chars; $("name").textContent = d.name; $("text").value = d.text;
+      $("try").href = "/demo?institute=" + encodeURIComponent(id);
+      $("login").hidden = true; $("editor").hidden = false; dirty = false; counter();
+      try { sessionStorage.setItem("ownerkey:" + id, key); } catch (e) {}
+      return refreshLists();
+    });
+  }
+  $("open").onclick = function () {
+    key = $("key").value.trim(); $("loginmsg").textContent = "";
+    load().catch(function (e) { $("loginmsg").textContent = e.message; });
+  };
+  $("key").onkeydown = function (e) { if (e.key === "Enter") $("open").click(); };
+  $("text").oninput = function () { dirty = true; counter(); };
+  $("save").onclick = function () {
+    $("save").disabled = true; say("Saving...", true);
+    api("PUT", "knowledge", { text: $("text").value })
+      .then(function (d) { dirty = false; say("Saved. The assistant is using the new details now (" + d.chars + " characters).", true); })
+      .catch(function (e) { say(e.message, false); })
+      .then(function () { $("save").disabled = false; });
+  };
+  $("undo").onclick = function () {
+    if (!confirm("Go back to the version before your last save?")) return;
+    api("POST", "undo").then(load).then(function () { say("Went back to the previous version.", true); })
+      .catch(function (e) { say(e.message, false); });
+  };
+  $("unans-clear").onclick = function () {
+    if (!confirm("Mark all of these as done? They will disappear from this list.")) return;
+    api("POST", "unanswered/clear").then(refreshLists).catch(function (e) { say(e.message, false); });
+  };
+  $("refresh").onclick = refreshLists;
+
+  function renderChats(rows) {
+    var ul = $("chats-list"); ul.textContent = "";
+    $("chats-empty").hidden = rows.length > 0;
+    rows.forEach(function (c) {
+      var li = document.createElement("li"), b = document.createElement("button");
+      b.className = "link";
+      b.textContent = c.last + " · " + c.channel + " " + c.who + " · " + c.messages + " messages" + (c.lead ? " · left a number" : "") + ": " + (c.first_question || "(no question)");
+      b.onclick = function () { openChat(c); };
+      li.appendChild(b); ul.appendChild(li);
+    });
+  }
+  function openChat(c) {
+    api("GET", "chats/" + encodeURIComponent(c.ref)).then(function (d) {
+      var body = $("chat-body"); body.textContent = "";
+      $("chat-title").textContent = d.channel + " " + d.who;
+      $("chat-view").hidden = false;
+      d.messages.forEach(function (m) {
+        var div = document.createElement("div"), who = document.createElement("small");
+        div.className = "bubble " + (m.role === "user" ? "user" : "assistant");
+        who.textContent = (m.role === "user" ? "Parent / student" : "Assistant") + " · " + m.when;
+        div.appendChild(who); div.appendChild(document.createTextNode(m.text));   // text node: never parsed as HTML
+        body.appendChild(div);
+      });
+    }).catch(function (e) { say(e.message, false); });
+  }
+  $("chats-load").onclick = function () {
+    api("GET", "chats").then(renderChats).catch(function (e) { say("Could not load conversations: " + e.message, false); });
+  };
+  $("summary-load").onclick = function () {
+    api("GET", "summary").then(function (d) { var el = $("summary-text"); el.textContent = d.text; el.hidden = false; })
+      .catch(function (e) { say("Could not load the summary: " + e.message, false); });
+  };
+  $("csv").onclick = function () {
+    fetch("/api/owner/" + encodeURIComponent(id) + "/leads.csv", { headers: { "X-Owner-Key": key } }).then(function (r) {
+      if (!r.ok) throw new Error(r.status === 403 ? "That key does not match." : "Download failed (" + r.status + ").");
+      return r.text();
+    }).then(function (text) {
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(new Blob([text], { type: "text/csv;charset=utf-8" }));
+      a.download = "leads-" + id + ".csv";
+      if (document.body) document.body.appendChild(a);
+      a.click();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 5000);
+    }).catch(function (e) { say(e.message, false); });
+  };
+  window.addEventListener("beforeunload", function (e) { if (dirty) { e.preventDefault(); e.returnValue = ""; } });
+  if (key) load().catch(function () { try { sessionStorage.removeItem("ownerkey:" + id); } catch (e) {} });
+</script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Chatbot demo</title>
+<style>body{font-family:system-ui,sans-serif;max-width:640px;margin:40px auto;padding:0 16px;line-height:1.5}</style>
+</head><body>
+<h1 id="title">Chatbot demo</h1>
+<p id="banner" hidden style="background:#fff3cd;color:#3b2f00;border:1px solid #e0c36a;padding:10px;border-radius:8px">
+<b>Unofficial demo.</b> Built only from this institute's public website to show how an enquiry assistant works. It is not run or endorsed by the institute.</p>
+<p id="note">Loading...</p>
+<script>
+  var id = new URLSearchParams(location.search).get("institute") || "demo";
+  var title = document.getElementById("title"), note = document.getElementById("note");
+  fetch("/api/public/" + encodeURIComponent(id))
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function (d) {
+      title.textContent = "Demo chat: " + d.name;
+      document.getElementById("banner").hidden = !d.unofficial;
+      note.textContent = "This is a test page. Click the chat button at the bottom right to talk to the assistant.";
+      var s = document.createElement("script");
+      s.src = "/widget.js"; s.async = true;
+      s.setAttribute("data-institute", id);
+      s.setAttribute("data-title", d.unofficial ? "Unofficial demo" : "Ask us anything");
+      s.setAttribute("data-greeting", d.unofficial ? "Unofficial demo built from public website info. Ask about courses, batches or the scholarship test." : "Hi! Ask me about courses, fees or batches.");
+      document.body.appendChild(s);
+    })
+    .catch(function (e) {
+      title.textContent = "This demo link is not valid";
+      note.textContent = String(e && e.message) === "404" ? "No institute matches this link. Check the address, or ask for a new link." : "The demo could not be loaded. Please try again.";
+    });
+</script>
+</body></html>

@@ -1,0 +1,12 @@
+{
+  "_help": "Your company page settings. Fill in what you want shown publicly; empty values are simply left out of the page. Restart is NOT needed after editing.",
+  "company_name": "CoachBot",
+  "product_name": "CoachBot",
+  "city": "Patna, Bihar",
+  "domain": "",
+  "email": "helpchatbot304@gmail.com",
+  "whatsapp": "",
+  "demo_institute": "demo",
+  "alerts": {},
+  "instagram": "helpchatbot305"
+}

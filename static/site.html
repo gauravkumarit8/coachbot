@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{product}}: AI enquiry assistant for coaching institutes in Patna and Bihar</title>
+<meta name="description" content="{{product}} answers parents' questions about fees, batches and admission 24x7 in English and Hinglish, using only your institute's own details, and sends you callback requests. Free 14-day pilot.">
+{{canonical}}
+<meta property="og:type" content="website">
+<meta property="og:title" content="{{product}}: never miss a parent enquiry again">
+<meta property="og:description" content="An AI assistant for coaching institutes: answers fee and batch questions day and night and sends you ready-to-call leads.">
+{{og_url}}
+<meta name="theme-color" content="#1a56db">
+<script type="application/ld+json">{{jsonld}}</script>
+<style>
+:root{--bg:#fff;--soft:#f4f7fb;--text:#14213d;--muted:#51607a;--brand:#1a56db;--brand-d:#1241a8;--line:#dfe6f0;--ok:#157347;--bad:#b42318}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--text);background:var(--bg)}
+a{color:var(--brand)}img{max-width:100%}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+header{position:sticky;top:0;background:rgba(255,255,255,.96);border-bottom:1px solid var(--line);z-index:5}
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:58px;flex-wrap:wrap}
+.logo{font-weight:800;font-size:1.2rem;color:var(--text);text-decoration:none}.logo span{color:var(--brand)}
+nav a{margin-left:16px;text-decoration:none;color:var(--muted);font-size:.95rem}nav a:hover{color:var(--brand)}
+.btn{display:inline-block;background:var(--brand);color:#fff;border:0;border-radius:10px;padding:12px 22px;font:inherit;font-weight:600;text-decoration:none;cursor:pointer}
+.btn:hover{background:var(--brand-d)}.btn.alt{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+.hero{padding:56px 0 40px;background:linear-gradient(180deg,var(--soft),#fff)}
+h1{font-size:clamp(1.9rem,5vw,2.9rem);line-height:1.15;margin:0 0 14px}h2{font-size:1.7rem;margin:0 0 10px}h3{margin:0 0 6px;font-size:1.05rem}
+.lead{font-size:1.15rem;color:var(--muted);max-width:660px}.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+.note{font-size:.9rem;color:var(--muted);margin-top:12px}
+section{padding:46px 0}section.soft{background:var(--soft)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin-top:20px}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px}
+.step{font-weight:800;color:var(--brand);font-size:1.4rem}
+.chat{max-width:520px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:20px;box-shadow:0 6px 24px rgba(20,33,61,.08)}
+.m{padding:8px 12px;border-radius:12px;margin:6px 0;max-width:88%}.m.u{background:var(--brand);color:#fff;margin-left:auto}.m.b{background:var(--soft);border:1px solid var(--line)}
+ul.tick{padding-left:0;list-style:none}ul.tick li{padding-left:26px;position:relative;margin:8px 0}ul.tick li:before{content:"\2713";position:absolute;left:0;color:var(--ok);font-weight:800}
+ul.cross li:before{content:"\2022";color:var(--muted)}
+details{border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin:10px 0;background:#fff}summary{cursor:pointer;font-weight:600}
+form{display:grid;gap:12px;max-width:560px}label{font-weight:600;font-size:.92rem;display:block;margin-bottom:4px}
+input[type=text],input[type=tel],input[type=email],textarea{width:100%;padding:11px 12px;border:1px solid #c5cfdd;border-radius:10px;font:inherit}
+input:focus,textarea:focus{outline:2px solid var(--brand);border-color:var(--brand)}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:.92rem;color:var(--muted)}.check input{margin-top:5px}
+.hp{position:absolute;left:-9999px;height:0;overflow:hidden}
+#msg{font-weight:600}#msg.ok{color:var(--ok)}#msg.err{color:var(--bad)}
+footer{border-top:1px solid var(--line);padding:26px 0;color:var(--muted);font-size:.92rem}
+@media(max-width:560px){nav{display:none}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><a class="logo" href="/">Coach<span>Bot</span></a>
+<nav><a href="#how">How it works</a><a href="#features">Features</a><a href="#faq">FAQ</a><a href="#contact">Contact</a></nav>
+<a class="btn" href="#contact">Free 14-day pilot</a></div></header>
+
+<main>
+<div class="hero"><div class="wrap">
+<h1>Never lose a parent enquiry again.</h1>
+<p class="lead">{{product}} is an AI assistant for coaching institutes. It answers questions about fees, batches and admission on your website, day and night, in English and Hinglish, using only your own details, and sends you parents who want a callback.</p>
+<div class="cta"><a class="btn" href="#contact">Start a free 14-day pilot</a><button class="btn alt" id="try" type="button">Try the live demo</button></div>
+<p class="note">Built for coaching institutes in {{city}}. Website chat is live now. Click &ldquo;Try the live demo&rdquo; and ask it anything a parent would ask.</p>
+</div></div>
+
+<section><div class="wrap">
+<h2>The problem every institute knows</h2>
+<p class="lead">Parents enquire at night, on weekends and during class hours. If nobody answers in minutes, they message the next institute. Your counsellor ends up answering the same ten questions all day.</p>
+<p class="note" style="margin-top:18px">Example conversation:</p>
+<div class="chat" style="margin-top:6px">
+<div class="m u">Class 11 Science ki fees kitni hai?</div>
+<div class="m b">Class 11 Science ki fees Rs 45,000 per year hai. Installments bhi available hain. (answer comes from your own fee list)</div>
+<div class="m b">Would you like our counsellor to call you back about this? Only if you want to, there is no obligation. <b>[Yes, call me back] [No thanks]</b></div>
+</div>
+</div></section>
+
+<section class="soft" id="how"><div class="wrap">
+<h2>How it works</h2>
+<div class="grid">
+<div class="card"><div class="step">1</div><h3>You share your details</h3><p>Fees, batches, admission steps, contact numbers. We put them in one simple page. Anything you do not know stays marked &ldquo;counsellor must confirm&rdquo;.</p></div>
+<div class="card"><div class="step">2</div><h3>We set it up</h3><p>We create your assistant and test it with the toughest questions parents ask, including Hinglish and off-topic ones.</p></div>
+<div class="card"><div class="step">3</div><h3>One line on your website</h3><p>Paste one line of code. The chat button appears. Callback requests reach your phone instantly.</p></div>
+</div>
+</div></section>
+
+<section id="features"><div class="wrap">
+<h2>What you get</h2>
+<div class="grid">
+<div class="card"><h3>Answers only from your details</h3><p>It never guesses fees or promises results. If it does not know, it says so and shares your contact options.</p></div>
+<div class="card"><h3>English, Hinglish and Hindi</h3><p>It replies in the language the parent writes, including Hindi typed in English letters.</p></div>
+<div class="card"><h3>Optional callback requests</h3><p>When a parent shows real interest, it offers a callback with a clear &ldquo;No thanks&rdquo; button. Nobody is forced to share a number.</p></div>
+<div class="card"><h3>Instant alerts to you</h3><p>New leads and handover requests come to you on Telegram or email, with name, number and what they asked.</p></div>
+<div class="card"><h3>Hand-over to your staff</h3><p>Refunds, complaints, fee negotiation or &ldquo;I want to talk to someone&rdquo; are passed to your team.</p></div>
+<div class="card"><h3>You stay in control</h3><p>Edit fees and batches yourself on a simple page, undo mistakes, read every conversation and download your leads as a spreadsheet.</p></div>
+<div class="card"><h3>Stays on topic</h3><p>Maths homework, weather or general questions get a polite refusal, so it never wastes your money or embarrasses you.</p></div>
+<div class="card"><h3>Questions it could not answer</h3><p>You see what parents asked that your details do not cover, so you know what to add next.</p></div>
+</div>
+</div></section>
+
+<section class="soft"><div class="wrap">
+<h2>Honest about what it is</h2>
+<div class="grid">
+<div class="card"><h3>It does</h3><ul class="tick"><li>Answer enquiries from your own information</li><li>Collect callback requests when parents choose to share them</li><li>Tell you when a human is needed</li></ul></div>
+<div class="card"><h3>It does not</h3><ul class="tick cross"><li>Replace your counsellors</li><li>Guarantee ranks or selections, or promise discounts</li><li>Take payments or ask for addresses, ID numbers or photos</li></ul></div>
+<div class="card"><h3>Coming soon</h3><ul class="tick cross"><li>WhatsApp, Instagram and Facebook messages</li><li>Weekly summary for owners</li></ul></div>
+</div>
+</div></section>
+
+<section id="faq"><div class="wrap">
+<h2>Questions owners ask</h2>
+<details><summary>Do parents have to give their phone number?</summary><p>No. The assistant answers first and never makes help depend on personal details. A callback is offered only when a parent shows interest, and they can say no or press Skip at any time.</p></details>
+<details><summary>What if it does not know the answer?</summary><p>It says so honestly, shares your contact options and records the question so you can add the answer later.</p></details>
+<details><summary>Which languages does it understand?</summary><p>English, Hindi and Hinglish (Hindi written in English letters). It replies in the same style.</p></details>
+<details><summary>Whose data is it, and who can see the chats?</summary><p>Chats and leads belong to your institute. You can see them, and we can see them when we support you. To write replies, the text of a message is processed by a third-party AI service. Read our <a href="/privacy">privacy page</a>.</p></details>
+<details><summary>How much does it cost?</summary><p>Start with a free 14-day pilot and judge it on real numbers: enquiries answered after hours, leads captured and demo classes booked. We will agree a simple monthly price with you before the pilot ends.</p></details>
+<details><summary>How long does setup take?</summary><p>It depends on how quickly you share your fee and batch details. Once we have them, we set up and test your assistant and tell you when it is ready.</p></details>
+</div></section>
+
+<section class="soft" id="contact"><div class="wrap">
+<h2>Start your free 14-day pilot</h2>
+<p class="lead">Tell us a little about your institute. We will contact you personally.</p>
+<form id="f" novalidate>
+<div><label for="name">Your name *</label><input type="text" id="name" maxlength="100" autocomplete="name" required></div>
+<div><label for="institute">Institute name</label><input type="text" id="institute" maxlength="120"></div>
+<div><label for="city">City / area</label><input type="text" id="city" maxlength="80" placeholder="Kankarbagh, Patna"></div>
+<div><label for="phone">Phone or WhatsApp number *</label><input type="tel" id="phone" maxlength="30" autocomplete="tel" placeholder="98XXXXXXXX"></div>
+<div><label for="email">Email (optional)</label><input type="email" id="email" maxlength="120" autocomplete="email"></div>
+<div><label for="message">Anything you want us to know? (optional)</label><textarea id="message" rows="3" maxlength="1000"></textarea></div>
+<div class="hp" aria-hidden="true"><label for="website">Leave this empty</label><input type="text" id="website" tabindex="-1" autocomplete="off"></div>
+<label class="check"><input type="checkbox" id="consent"> <span>I agree that {{company}} may contact me about {{product}}. I have read the <a href="/privacy" target="_blank">privacy page</a>.</span></label>
+<div><button class="btn" id="send" type="submit">Send</button> <span id="msg" role="status"></span></div>
+</form>
+<p class="note">Or reach us directly: {{contact_links}}</p>
+</div></section>
+</main>
+
+<footer><div class="wrap">&copy; {{year}} {{company}} &middot; {{city}} &middot; <a href="/privacy">Privacy</a> &middot; {{contact_links}}</div></footer>
+
+<script src="/widget.js" data-institute="{{demo_institute}}" data-title="Try the demo" data-greeting="Hi! I am the demo assistant. Ask me about courses, fees or batches." async></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  $("try").onclick = function () {
+    var b = $("cb-btn");
+    if (b) { b.click(); } else { $("msg").textContent = ""; }
+  };
+  $("f").onsubmit = function (e) {
+    e.preventDefault();
+    var msg = $("msg"), btn = $("send");
+    msg.className = ""; msg.textContent = "Sending...";
+    btn.disabled = true;
+    fetch("/api/contact", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({
+      name: $("name").value, institute: $("institute").value, city: $("city").value, phone: $("phone").value,
+      email: $("email").value, message: $("message").value, consent: $("consent").checked, website: $("website").value }) })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { return { ok: r.ok, status: r.status, d: d }; }); })
+      .then(function (x) {
+        if (x.ok) { msg.className = "ok"; msg.textContent = "Thank you! We will contact you soon."; $("f").reset(); }
+        else { msg.className = "err"; msg.textContent = x.status === 429 ? "Too many attempts. Please try again later." : (x.d && x.d.detail) || "Something went wrong. Please try again."; }
+      })
+      .catch(function () { msg.className = "err"; msg.textContent = "Could not send. Please check your internet and try again."; })
+      .then(function () { btn.disabled = false; });
+  };
+})();
+</script>
+</body>
+</html>

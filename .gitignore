@@ -1,0 +1,10 @@
+# secrets and local data: never commit or share these
+.env
+*.db
+.venv/
+__pycache__/
+*.pyc
+institutes/*/history/
+*.patch
+.vscode/*
+!.vscode/launch.json
