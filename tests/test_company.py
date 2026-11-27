@@ -15,7 +15,7 @@ from fastapi import HTTPException  # noqa: E402
 logging.disable(logging.CRITICAL)
 db.init()
 REAL_LOAD = company.load
-SETTINGS = {**REAL_LOAD(), "company_name": "Acme <Tech>", "product_name": "CoachBot", "email": "hello@acme.in", "whatsapp": "+91 96086-21099", "instagram": "@acme.coach",
+SETTINGS = {**REAL_LOAD(), "company_name": "Acme <Tech>", "product_name": "CoachBot", "email": "hello@acme.in", "whatsapp": "+91 99999-00001", "instagram": "@acme.coach",
             "domain": "https://acme.in/", "alerts": {"telegram_chat_id": "42"}}
 company.load = lambda: dict(SETTINGS, domain=SETTINGS["domain"].rstrip("/"), whatsapp=re.sub(r"\D", "", SETTINGS["whatsapp"]), instagram=company.instagram_handle(SETTINGS["instagram"]))
 
@@ -29,14 +29,14 @@ def code_of(fn, *a, **k):
         return e.status_code, e.detail
     return 200, None
 def form(**kw):
-    base = dict(name="Ravi Kumar", institute="ABC Classes", city="Kankarbagh", phone="9608621099", email="", message="Interested", consent=True, website="")
+    base = dict(name="Ravi Kumar", institute="ABC Classes", city="Kankarbagh", phone="9999900001", email="", message="Interested", consent=True, website="")
     return main.ContactIn(**{**base, **kw})
 
 
 # ---- pages ----
 home = main.root().body
 assert "<h1>" in home and "{{" not in home and "Acme &lt;Tech&gt;" in home and "Acme <Tech>" not in re.sub(r"<script.*?</script>", "", home, flags=re.S)   # filled in and HTML-escaped
-assert "https://wa.me/919608621099" in home and "mailto:hello@acme.in" in home and 'rel="canonical" href="https://acme.in/"' in home
+assert "https://wa.me/919999900001" in home and "mailto:hello@acme.in" in home and 'rel="canonical" href="https://acme.in/"' in home
 assert 'href="https://www.instagram.com/acme.coach/"' in home and "Instagram @acme.coach" in home                   # handle cleaned from "@acme.coach"
 assert json.loads(re.search(r'ld\+json">(.*?)</script>', home, re.S).group(1))["@graph"][0]["sameAs"] == ["https://www.instagram.com/acme.coach/"]
 assert 'application/ld+json' in home and json.loads(re.search(r'ld\+json">(.*?)</script>', home, re.S).group(1))["@graph"][0]["name"] == "Acme <Tech>"
@@ -62,7 +62,7 @@ cfg = company.load(); assert cfg["company_name"] == "Zed" and cfg["whatsapp"] ==
 company.ROOT = real_root
 shipped = json.loads((real_root / "site.json").read_text())                                                          # the shipped file is valid JSON
 assert shipped["company_name"] == "CoachBot" and shipped["email"] == "helpchatbot304@gmail.com" and company.instagram_handle(shipped["instagram"]) == "helpchatbot305"
-company.load = lambda: dict(SETTINGS, domain="https://acme.in", whatsapp="919608621099")
+company.load = lambda: dict(SETTINGS, domain="https://acme.in", whatsapp="919999900001")
 
 # Instagram handle cleaning: handle, @handle and links all work; odd values are ignored
 for raw, want in (("helpchatbot305", "helpchatbot305"), ("@helpchatbot305", "helpchatbot305"), ("https://www.instagram.com/helpchatbot305/", "helpchatbot305"),
@@ -84,7 +84,7 @@ sent = []
 main.channels.run_in_background = lambda fn, *a, **k: sent.append((fn, a))
 assert main.contact(form(), Req("2.2.2.2")) == {"ok": True}
 row = db.list_inquiries()[0]
-assert row["name"] == "Ravi Kumar" and row["institute"] == "ABC Classes" and row["phone"] == "9608621099" and row["message"] == "Interested"
+assert row["name"] == "Ravi Kumar" and row["institute"] == "ABC Classes" and row["phone"] == "9999900001" and row["message"] == "Interested"
 assert sent and sent[0][0] is notify.send_alerts and sent[0][1][0] == {"telegram_chat_id": "42"} and "Ravi Kumar" in sent[0][1][1] and "ABC Classes" in sent[0][1][1]
 n = len(db.list_inquiries())
 bad = [(dict(name="R"), "name"), (dict(phone="", email=""), "phone or WhatsApp"), (dict(phone="12345", email="a@b.in"), "does not look right"),

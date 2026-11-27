@@ -11,9 +11,9 @@ db.init()
 root, envp = Path(tempfile.mkdtemp()), Path(tempfile.mkdtemp()) / ".env"
 
 # ---- onboarding ----
-r = onboard.make("mcm-patna", "MCM Patna", phone="+91 96086 21099", telegram_chat="42", email="o@x.in", root=root, env_path=envp, write_env=True)
+r = onboard.make("mcm-patna", "MCM Patna", phone="+91 99999 00001", telegram_chat="42", email="o@x.in", root=root, env_path=envp, write_env=True)
 cfg = json.loads((root / "mcm-patna" / "config.json").read_text())
-assert cfg["id"] == "mcm-patna" and cfg["owner_key_env"] == "MCM_PATNA_OWNER_KEY" and cfg["owner_phone"] == "919608621099"
+assert cfg["id"] == "mcm-patna" and cfg["owner_key_env"] == "MCM_PATNA_OWNER_KEY" and cfg["owner_phone"] == "919999900001"
 assert cfg["alerts"] == {"telegram_chat_id": "42", "email": "o@x.in"} and not cfg.get("unofficial_demo")
 kn = (root / "mcm-patna" / "knowledge.md").read_text()
 assert "MCM Patna" in kn and "{name}" not in kn and kn.count("NOT provided, counsellor must confirm") >= 8 and len(kn) < registry.MAX_KNOWLEDGE_CHARS

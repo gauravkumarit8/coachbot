@@ -47,6 +47,9 @@ Override with `"handoff_minutes": 30` in an institute's `config.json` (`0` = nev
 - **Delete on request.** `python -m app.forget <institute_id> <phone-or-chat-id>` shows what it would delete for one person (their leads, chats, chats that mention their number); add `--yes` to delete. Back up `coachbot.db` first.
 - All scheduled jobs run in an hourly background check inside the server and note in the database that they ran, so restarts never repeat them. Turn off with `COACHBOT_BACKGROUND_JOBS=0`.
 
+## Deploying and GitHub
+`docs/DEPLOY_RENDER.md` is the step-by-step guide for Render (with a subdomain), including what works and what does not on Render's Free plan with a monitor pinging it (`render.free.yaml`). `docs/DEPLOY.md` explains how to push to a private GitHub repository safely, run CoachBot on a subdomain of a domain that already hosts another app, set up the server (Docker, HTTPS, backups) and update it. Files: `Dockerfile`, `docker-compose.yml`, `Caddyfile.example`, `.github/workflows/tests.yml` (runs the offline tests on every push). `CORS_ORIGINS` in `.env` lists the websites allowed to show the chat.
+
 ## Callback offers (optional lead capture)
 The bot never makes help depend on personal details. When a visitor shows clear interest (admission, demo, seat, join...) or has asked a few real questions, the answer is followed by ONE polite offer of a callback with two website buttons, **Yes, call me back** and **No thanks**. When the bot asks for a name or number, a **Skip** button is shown. A "no" or "skip" is final for that chat and is answered with fixed text (no AI call). On WhatsApp, Instagram and Facebook the same choice is written as text (YES / NO / SKIP). The offers come from `app/leadflow.py` (code, not AI), are available in English, Hinglish and Hindi, and can be switched off per institute with `"lead_offers": false`.
 

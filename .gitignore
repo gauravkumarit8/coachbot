@@ -8,3 +8,8 @@ institutes/*/history/
 *.patch
 .vscode/*
 !.vscode/launch.json
+.env.*
+!.env.example
+Caddyfile
+data/
+*.zip

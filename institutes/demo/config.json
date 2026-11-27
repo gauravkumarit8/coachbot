@@ -1,7 +1,6 @@
 {
   "id": "demo",
   "name": "Demo Coaching Academy",
-  "owner_phone": "919608621099",
   "owner_key_env": "DEMO_OWNER_KEY",
   "meta_ids": [],
   "meta_token_env": "META_PAGE_TOKEN",

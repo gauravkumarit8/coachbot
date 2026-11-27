@@ -13,7 +13,8 @@ from pathlib import Path
 from . import channels
 
 log = logging.getLogger("coachbot")
-ROOT = Path(__file__).resolve().parent.parent / "institutes"
+SHIPPED = Path(__file__).resolve().parent.parent / "institutes"   # the institutes that come with the code
+ROOT = Path(os.getenv("COACHBOT_INSTITUTES_DIR") or SHIPPED)       # where they live while running (a persistent disk on Render)
 MAX_KNOWLEDGE_CHARS = 12000   # every message sends this to the model, so keep it lean (cost + speed)
 KEEP_VERSIONS = 20            # old versions kept per institute for "undo"
 

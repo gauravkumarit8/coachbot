@@ -11,7 +11,9 @@ import string
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent / "institutes"
+from . import registry
+
+ROOT = registry.ROOT
 ALPHABET = string.ascii_lowercase + string.digits
 STRIP = ("owner_key_env", "owner_phone", "whatsapp", "meta_ids", "meta_token_env", "alerts")
 

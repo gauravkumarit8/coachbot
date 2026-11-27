@@ -1,0 +1,14 @@
+.git
+.github
+.venv
+.env
+.vscode
+*.db
+**/__pycache__
+**/*.pyc
+institutes/*/history
+tests
+docs
+data
+*.patch
+*.zip

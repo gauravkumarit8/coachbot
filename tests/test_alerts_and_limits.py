@@ -19,7 +19,15 @@ assert len(lim._hits) < 100                                                     
 H = {"cf-connecting-ip": "5.5.5.5", "x-forwarded-for": "6.6.6.6, 10.0.0.1"}
 assert limits.client_ip(H, "127.0.0.1", trust_proxy=False) == "127.0.0.1"           # forged headers ignored by default
 assert limits.client_ip(H, "127.0.0.1", trust_proxy=True) == "5.5.5.5"
-assert limits.client_ip({"x-forwarded-for": "6.6.6.6, 10.0.0.1"}, "127.0.0.1", trust_proxy=True) == "6.6.6.6"
+XF = {"x-forwarded-for": "9.9.9.9, 6.6.6.6, 10.0.0.1"}                              # 9.9.9.9 was typed by the visitor; the proxies appended the rest
+assert limits.client_ip(XF, "127.0.0.1", trust_proxy=True) == "10.0.0.1"             # counted from the right: one proxy of ours
+assert limits.client_ip(XF, "127.0.0.1", trust_proxy=True, hops=2) == "6.6.6.6" and limits.client_ip(XF, "127.0.0.1", trust_proxy="xff", hops=2) == "6.6.6.6"
+assert limits.client_ip(XF, "127.0.0.1", trust_proxy=True, hops=9) == "9.9.9.9"      # more hops than entries: nearest entry
+assert limits.client_ip({"x-forwarded-for": "6.6.6.6"}, "127.0.0.1", trust_proxy=True) == "6.6.6.6"
+assert limits.client_ip(H, "127.0.0.1", trust_proxy="xff") == "10.0.0.1"              # xff mode ignores CF-Connecting-IP (a visitor could forge it behind nginx)
+assert limits.client_ip({"cf-connecting-ip": "5.5.5.5"}, "127.0.0.1", trust_proxy="xff") == "127.0.0.1"
+os.environ["TRUST_PROXY"] = "xff"; os.environ["PROXY_HOPS"] = "2"; assert limits.client_ip(XF, "127.0.0.1") == "6.6.6.6"
+os.environ["PROXY_HOPS"] = "junk"; assert limits.client_ip(XF, "127.0.0.1") == "10.0.0.1"; os.environ.pop("PROXY_HOPS"); os.environ.pop("TRUST_PROXY")
 assert limits.client_ip({}, "127.0.0.1", trust_proxy=True) == "127.0.0.1" and limits.client_ip({}, None, trust_proxy=False) == "?"
 
 # ---------- Telegram ----------

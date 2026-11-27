@@ -1,0 +1,5 @@
+# Copy to Caddyfile and replace the address with your subdomain. Caddy gets and renews the HTTPS certificate by itself.
+coachbot.example.com {
+	encode gzip
+	reverse_proxy coachbot:8000
+}

@@ -1,0 +1,37 @@
+# CoachBot on one server.
+#   Server already has its own web server (nginx/Caddy) for another app:   docker compose up -d --build
+#       then point that web server at 127.0.0.1:8000 (see docs/DEPLOY.md).
+#   Nothing else on the server uses ports 80/443 (fresh server):           docker compose --profile caddy up -d --build
+#       Caddy then gets the HTTPS certificate for you (copy Caddyfile.example to Caddyfile and put your address in it).
+services:
+  coachbot:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      COACHBOT_DB: /data/coachbot.db      # the database lives on the server's disk, not inside the container
+      TRUST_PROXY: "xff"                  # a web server sits in front: use each visitor's real address for the limits
+    volumes:
+      - ./data:/data
+      - ./institutes:/app/institutes      # fees/batches that owners edit are saved here
+      - ./site.json:/app/site.json:ro     # company page settings: edit the file, no rebuild needed
+    ports:
+      - "127.0.0.1:8000:8000"             # only reachable from the server itself; the web server in front makes it public
+
+  caddy:
+    image: caddy:2
+    profiles: ["caddy"]
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - coachbot
+
+volumes:
+  caddy_data:
+  caddy_config:

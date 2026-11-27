@@ -37,7 +37,7 @@ for i, msg in enumerate(["fees kitni hai?", "hello", "Thanks!", "Is there a host
     assert f.router_calls == [] and len(f.main_calls) == 1 and out["reply"] == "ok", msg
 
 # 1b. Answers to "what is your name / number?" are never refused and never need the AI check
-for i, (msg, bot) in enumerate([("9608621088", ""), ("+91 99900 01111", "x"), ("99900-01111", "x"), ("(0612) 2345678", "x"),
+for i, (msg, bot) in enumerate([("9999900002", ""), ("+91 99900 01111", "x"), ("99900-01111", "x"), ("(0612) 2345678", "x"),
                                 ("Gaurav", "May I have your name?"), ("Ravi Kumar", "What is your name and phone number?"),
                                 ("Patna", "Which city are you in?"), ("Class 11", "Which class is the student in?")]):
     if bot: db.add_message("demo", "website", f"d{i}", "assistant", bot)      # what the bot said just before

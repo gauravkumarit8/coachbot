@@ -1,0 +1,6 @@
+# Keep one line-ending style in the repository. Windows editors may show CRLF locally; that is fine.
+* text=auto
+Dockerfile text eol=lf
+*.yml text eol=lf
+Caddyfile* text eol=lf
+*.sh text eol=lf

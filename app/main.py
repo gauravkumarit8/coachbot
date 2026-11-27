@@ -15,6 +15,8 @@ from pydantic import BaseModel
 from dotenv import load_dotenv
 
 load_dotenv()  # read .env before the modules below read their settings
+if os.getenv("COACHBOT_ENV_FILE"):
+    load_dotenv(os.getenv("COACHBOT_ENV_FILE"))  # a second settings file on the persistent disk (Render); real environment variables still win
 
 from . import brain, channels, company, db, export, jobs, limits, llm, notify, registry, suggestions, weekly  # noqa: E402
 
@@ -24,7 +26,14 @@ STATIC = Path(__file__).resolve().parent.parent / "static"
 
 app = FastAPI(title="CoachBot")
 # MVP: open CORS so any client website can embed the widget. Restrict to client domains later.
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["GET", "POST"], allow_headers=["*"])
+def _cors_origins() -> list:
+    """Websites allowed to call the chat from a browser. CORS_ORIGINS="https://a.com,https://b.com" (your own site and each
+    institute's website); unset or "*" means every site (fine for local testing, not for real clients)."""
+    raw = os.getenv("CORS_ORIGINS", "*").strip()
+    return ["*"] if raw in ("", "*") else [o.strip().rstrip("/") for o in raw.split(",") if o.strip()]
+
+
+app.add_middleware(CORSMiddleware, allow_origins=_cors_origins(), allow_methods=["GET", "POST"], allow_headers=["*"])
 db.init()
 
 def _warm_llm():
@@ -400,6 +409,16 @@ def leads_csv(institute_id: str, x_admin_token: str = Header(None)):
     return PlainTextResponse(export.leads_csv(db.list_leads(institute_id, 5000)), media_type="text/csv; charset=utf-8")
 
 
+@app.get("/admin/whoami")
+def admin_whoami(request: Request, x_admin_token: str = Header(None)):
+    """Which visitor address the app sees. Open it from your own phone to check TRUST_PROXY / PROXY_HOPS behind a proxy."""
+    _admin(x_admin_token)
+    h, peer = request.headers, (request.client.host if request.client else None)
+    return {"app_uses": limits.client_ip(h, peer), "peer": peer, "x_forwarded_for": h.get("x-forwarded-for"),
+            "cf_connecting_ip": h.get("cf-connecting-ip"), "true_client_ip": h.get("true-client-ip"),
+            "trust_proxy": os.getenv("TRUST_PROXY", ""), "proxy_hops": os.getenv("PROXY_HOPS", "1")}
+
+
 @app.get("/admin/inquiries")
 def admin_inquiries(x_admin_token: str = Header(None)):
     """Pilot enquiries from our home page."""
@@ -434,6 +453,7 @@ def resume(body: Resume, x_admin_token: str = Header(None)):
     return {"ok": True}
 
 
+@app.head("/health", include_in_schema=False)  # uptime monitors often send HEAD
 @app.get("/health")
 def health():
     return {"ok": True, "institutes": len(reg.all()), "llm": llm.info()}  # a count, never the ids: private demo ids must not leak
@@ -448,5 +468,10 @@ def institute_shortcut(institute_id: str):
         raise HTTPException(404)
     return RedirectResponse(f"/demo?institute={quote(institute_id)}")
 
+
+if os.getenv("RENDER") and not str(db.DB_PATH).startswith("/data"):
+    log.warning("STORAGE IS NOT PERSISTENT: on Render without a disk (the Free plan), chats, leads, owner edits and notes are LOST "
+                "whenever the service restarts or redeploys. Fine for demos; use a paid instance with a disk before real clients. "
+                "Your lead alerts (Telegram/email) are then your only lasting record.")
 
 jobs.start(reg.all)  # daily cleanup + Monday summaries (an hourly check in a background thread; off with COACHBOT_BACKGROUND_JOBS=0)

@@ -25,6 +25,7 @@ class _App:
     def get(self, path, **kw): return self._route("GET")(path, **kw)
     def post(self, path, **kw): return self._route("POST")(path, **kw)
     def put(self, path, **kw): return self._route("PUT")(path, **kw)
+    def head(self, path, **kw): return self._route("HEAD")(path, **kw)
     def add_middleware(self, *a, **k): pass
 
 

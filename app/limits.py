@@ -27,13 +27,32 @@ class Limiter:
             return True
 
 
-def client_ip(headers, peer_host, trust_proxy=None) -> str:
-    """The visitor's address. Behind cloudflared/ngrok/nginx every request arrives from the proxy itself, so the real
-    address is in a header, but headers can be forged, so they are only trusted when TRUST_PROXY=1 is set."""
+def _mode(trust_proxy) -> str:
     if trust_proxy is None:
-        trust_proxy = os.getenv("TRUST_PROXY", "") == "1"
-    if trust_proxy:
-        ip = headers.get("cf-connecting-ip") or (headers.get("x-forwarded-for") or "").split(",")[0].strip()
-        if ip:
-            return ip
+        v = os.getenv("TRUST_PROXY", "").strip().lower()
+    else:
+        v = "1" if trust_proxy is True else "" if trust_proxy is False else str(trust_proxy).strip().lower()
+    return "xff" if v == "xff" else "1" if v in ("1", "true", "yes") else ""
+
+
+def client_ip(headers, peer_host, trust_proxy=None, hops=None) -> str:
+    """The visitor's address. Behind a tunnel or web server every request arrives from that proxy, so the real address
+    is in a header, but headers can be forged, so they are only trusted when TRUST_PROXY is set:
+      TRUST_PROXY=1    a Cloudflare tunnel (cloudflared) or similar: use CF-Connecting-IP, else X-Forwarded-For
+      TRUST_PROXY=xff  your own nginx/Caddy or a platform such as Render: use X-Forwarded-For only
+    X-Forwarded-For is counted from the RIGHT: each proxy adds the address it saw on the right-hand end, so the left-hand
+    entries may have been typed by the visitor. PROXY_HOPS = how many proxies of yours are in front (default 1)."""
+    mode = _mode(trust_proxy)
+    if mode:
+        if mode == "1":
+            ip = (headers.get("cf-connecting-ip") or "").strip()
+            if ip:
+                return ip
+        parts = [p.strip() for p in (headers.get("x-forwarded-for") or "").split(",") if p.strip()]
+        if parts:
+            try:
+                n = max(1, min(int(os.getenv("PROXY_HOPS", "1")) if hops is None else int(hops), 5))
+            except ValueError:
+                n = 1
+            return parts[-n] if len(parts) >= n else parts[0]
     return peer_host or "?"

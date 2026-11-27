@@ -165,3 +165,9 @@ run(main.meta_in(Req(body=echo), BackgroundTasks())); assert len(msent) == 1    
 assert code_of(main.leads, "demo", "wrong") == 403 and [l["name"] for l in main.leads("demo", "admin-token-123456")] == ["Ravi"]
 admin = os.environ.pop("ADMIN_TOKEN"); assert code_of(main.leads, "demo", "x") == 503; os.environ["ADMIN_TOKEN"] = admin
 print("api wiring tests passed")
+
+# CORS: every site by default, or exactly the websites listed in CORS_ORIGINS
+os.environ.pop("CORS_ORIGINS", None); assert main._cors_origins() == ["*"]
+os.environ["CORS_ORIGINS"] = " https://a.com/ , https://www.b.in,, "; assert main._cors_origins() == ["https://a.com", "https://www.b.in"]
+os.environ["CORS_ORIGINS"] = "*"; assert main._cors_origins() == ["*"]
+os.environ.pop("CORS_ORIGINS")

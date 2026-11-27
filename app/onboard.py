@@ -6,6 +6,7 @@ Options: --phone 919999999999   --telegram-chat 123456789   --email owner@exampl
 Prospect demos are different: use `python -m app.new_demo`."""
 import argparse
 import json
+import os
 import re
 import secrets
 import sys
@@ -21,7 +22,8 @@ def env_name(inst_id: str) -> str:
 
 def make(inst_id: str, name: str, phone="", telegram_chat="", email="", root: Path | None = None, env_path: Path | None = None,
          write_env: bool = False) -> dict:
-    root = root or HERE / "institutes"
+    from . import registry
+    root = root or registry.ROOT
     if not ID_RE.match(inst_id):
         raise ValueError("id must be 3 to 40 characters: lowercase letters, digits and hyphens (for example mcm-patna)")
     if not name.strip():
@@ -66,6 +68,7 @@ def instructions(res: dict, domain: str = "https://YOUR-HOST") -> str:
 4. Try the chat:                            {domain}/demo?institute={i}
 5. Add this line to the institute's website, just before </body>:
    <script src="{domain}/widget.js" data-institute="{i}" data-title="Chat with us" async></script>
+   If CORS_ORIGINS is set in .env, add the institute's website (for example https://their-site.com) to it and restart.
 6. Alerts:  python -m app.notify test {i}
 7. Go-live checks: ask the 20 toughest parent questions, one off-topic question, one refund request, and leave a test lead.
    See docs/ONBOARDING.md for the full checklist."""
@@ -78,7 +81,7 @@ def main(argv=None):
     ap.add_argument("--write-env", action="store_true"); ap.add_argument("--domain", default="https://YOUR-HOST")
     a = ap.parse_args(argv)
     try:
-        res = make(a.id, a.name, a.phone, a.telegram_chat, a.email, env_path=HERE / ".env", write_env=a.write_env)
+        res = make(a.id, a.name, a.phone, a.telegram_chat, a.email, env_path=Path(os.getenv("COACHBOT_ENV_FILE") or HERE / ".env"), write_env=a.write_env)
     except ValueError as e:
         print(f"Not created: {e}")
         return 2
